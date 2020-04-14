@@ -6,6 +6,13 @@
 {{error}}
 <body style='margin-top: 5rem;'>
     <h1 style='margin-bottom: 1rem;'>Add Profile</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <h3 class='message' style="color:red;">{{ message }}</h3>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 <form method='POST' enctype="multipart/form-data" action='{{ url_for("submit") }}'>
     {{form.csrf_token}}
     

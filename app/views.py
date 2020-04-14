@@ -66,6 +66,9 @@ def submit():
 
         flash('New profile successfully created.', 'success')
         return redirect(url_for('profiles'))
+    else:
+        flash('Invalid file', 'fail')
+        return redirect(url_for('profile'))
     return render_template('profile.html')
     
     
