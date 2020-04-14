@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<body>
+    <h1>Profiles</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <h3 class='message'>{{ message }}</h3>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <ul class="list-group list-group-flush">
+    {% for user in users %}
+    <div class='card' style='padding:2rem;'>
+        
+        <li class="list-group-item" class='card-body' style="width: 18rem;">
+            <img  class='img-fluid' src='{{ url_for("static", filename = "uploads/"+user.image) }}'>
+           
+             <h2 class="card-title">{{user.firstname}} {{ user.lastname }} </h2>
+             <p class="card-text">{{user.gender}}</p>
+            <p class="card-text">{{user.location}}</p>
+            
+        </li>
+        
+    
+        <form method='GET' action='{{ url_for("user_profile", userid=user.userid) }}'><button class="btn btn-primary" type="submit"> Go to user profile</button></form> 
+    </div>     
+    {% endfor %}
+</ul>
+
+    
+</body>
+{% endblock %}
+
+
+
+
+

@@ -4,3 +4,15 @@ itsdangerous==1.1.0
 Jinja2==2.11.1
 MarkupSafe==1.1.1
 Werkzeug==1.0.0
+Flask-WTF
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Script
+Flask-Login
+psycopg2
+psycopg2-binary==2.8.3
+pycodestyle==2.5.0
+autopep8==1.4.4
+gunicorn==19.9.0
+itsdangerous==1.1.0
+

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+
+    <div class='card' style="width: 30rem; margin-top: 5rem;">
+    {% for users in user %}
+        <img class="card-img-top" src='/static/uploads/{{users.image}}'>
+        <h1 class="card-title">{{ users.firstname }} {{users.lastname}}</h1>
+        <h5 class="card-text">{{users.email}}</h5>
+        <h5 class="card-text">{{users.gender}}</h5>
+        <h5 class="card-text">Joined on {{users.date_created}}</h5>
+        <h5 class="card-text">{{users.bio}}</h5>
+        <h5 class="card-text">{{users.location}}</h5>
+        <button class="btn btn-primary" >Follow</button>
+        <button class="btn btn-primary" style='margin-top: 1rem;'>Send Message</button>
+
+    {% endfor %}
+    </div>
+
+
+{% endblock %}

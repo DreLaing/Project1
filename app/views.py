@@ -5,13 +5,18 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 
-from app import app
-from flask import render_template, request, redirect, url_for
+from app import app, db
+from flask import render_template, request, redirect, url_for, flash
+from app.forms import myForm
+from app.models import userProfile
+from datetime import date
+from base64 import b64encode
+import os
+from werkzeug.utils import secure_filename
 
 
-###
-# Routing for your application.
-###
+
+
 
 @app.route('/')
 def home():
@@ -19,33 +24,54 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/about/')
-def about():
-    """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+@app.route('/profile', methods=['POST', 'GET'])
+def profile():
+    form = myForm()
+    return render_template('profile.html', form=form)
 
 
-###
-# The functions below should be applicable to all Flask apps.
-###
+@app.route('/profiles', methods=['GET', 'POST'])
+def profiles():
+    users = userProfile.query.all()
+    return render_template('profiles.html', users=users)
 
-@app.route('/<file_name>.txt')
-def send_text_file(file_name):
-    """Send your static text file."""
-    file_dot_text = file_name + '.txt'
-    return app.send_static_file(file_dot_text)
+@app.route('/profile/<int:userid>', methods=['GET'])
+def user_profile(userid):
+    user = userProfile.query.filter_by(userid=userid)
+    return render_template('user_profile.html', user=user)
 
 
-@app.after_request
-def add_header(response):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also tell the browser not to cache the rendered page. If we wanted
-    to we could change max-age to 600 seconds which would be 10 minutes.
-    """
-    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
-    response.headers['Cache-Control'] = 'public, max-age=0'
-    return response
+
+@app.route('/submit', methods=['GET', 'POST'])
+def submit():
+    form = myForm()
+    error = 'Make sure to fill in each field with correct data'
+    if request.method == 'POST' and form.validate_on_submit():
+        f = form.image.data
+        filename = secure_filename(f.filename)
+        data = userProfile(
+            firstname = form.fname.data,
+            lastname = form.lname.data,
+            email = form.email.data,
+            gender = form.gender.data,
+            location = form.location.data,
+            bio = form.bio.data,
+            image = filename,
+            date_created = date.today())
+
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'],f.filename))
+        
+        db.session.add(data)
+        db.session.commit()
+
+        flash('New profile successfully created.', 'success')
+        return redirect(url_for('profiles'))
+    return render_template('profile.html')
+    
+    
+    
+
+
 
 
 @app.errorhandler(404)
